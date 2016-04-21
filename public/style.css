@@ -1,1 +1,51 @@
 
+.card {
+    border: thin solid black;
+    margin: 10px;
+}
+
+.splashtitle {
+    background-color: maroon;
+    color:white;
+    font-size: 20px;
+}
+
+.splashbody {
+    background-color: #f0f0f0;
+}
+
+.splash {
+    margin: 15px;
+}
+
+h1 {
+    text-align: center;
+}
+
+body {
+    background-color: wheat;
+}
+
+.card {
+    background-color: #f0f0f0;
+}
+img {
+    margin: 5px;
+    height: 350px;
+}
+.usr {
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+}
+.message {
+    font-size: 16px;
+}
+
+#message {
+    height: 300px;
+}
+
+input {
+    margin: 20px;
+}

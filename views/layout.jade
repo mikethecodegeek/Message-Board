@@ -1,7 +1,7 @@
 doctype html
 html(lang="en")
   head
-    title Jade App
+    title Not 4Chan
 
     if theme
       link(rel="stylesheet", href="https://bootswatch.com/#{theme}/bootstrap.min.css")
@@ -21,10 +21,11 @@ html(lang="en")
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a.navbar-brand(href='/') Jade App
+          a.navbar-brand(href='/') Not4Chan
         #bs-example-navbar-collapse-1.collapse.navbar-collapse
           ul.nav.navbar-nav
             li
-              a(href='/contact') Contact
-
+              a(href='/messages') View Messages
+            li
+              a(href='/add') Post a message
     block content

@@ -1,0 +1,14 @@
+//
+extends ./layout.jade
+
+block content
+    .container
+        h1.text-center Messages
+        -
+            list= messages
+        each item in list
+            .card.col-md-12
+              img.col-md-6(src=item.img)
+              .usr.col-md-5= item.usr
+              .message.col-md-5= item.message
+              div= timestamp
