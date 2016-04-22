@@ -2,6 +2,7 @@
 .card {
     border: thin solid black;
     margin: 10px;
+    height: 360px;
 }
 
 .splashtitle {

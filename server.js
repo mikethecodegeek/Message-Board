@@ -4,67 +4,74 @@ const PORT = process.env.PORT || 3000;
 
 let jade = require('jade');
 let http = require('http');
-let qs = require('qs');
-let nodeStatic = require('node-static');
-let file = new nodeStatic.Server('./public');
 var moment = require('moment');
+var express = require('express');
+var morgan = require('morgan');
+var bodyParser = require('body-parser');
+var uuid = require('uuid');
+var app = express();
+var path = require('path');
+var Message = require('./models/messages');
 
-http.createServer((req, res) => {
-  let html;
-  let qsParts = req.url.split('?');
-  let path = qsParts[0];
-  
-  let query = qs.parse(qsParts[1]);
-  var messagearr=[{img:'https://marciamearawritesdotcom.files.wordpress.com/2015/02/sharing.jpg', usr: 'Emma the Elephant',message: 'It sure is good to be home!'},
-    {img: 'http://uploadtemple.com/blog/wp-content/uploads/2012/09/filesharing-comic.jpg',usr:'A Happy Family',message:'Go Team!!! Yay!'}];
-  switch(path) {
-    case '/': {
-      html = jade.renderFile('./views/index.jade', {
-        theme: validateTheme(query.theme)
-      });
-      res.end(html);
-      break;
-    }
-    case '/contact': {
-      html = jade.renderFile('./views/contact.jade', {
-        theme: validateTheme(query.theme)
-      });
-      res.end(html);
-      break;
-    }
-    case '/messages': {
-      html = jade.renderFile('./views/messages.jade', {
-        messages: messagearr,
-        timestamp: moment(Date.now()).format('MM/DD/YYYY'),
-        theme: validateTheme(query.theme)
-      });
-      res.end(html);
-      break;
-    }
-    case '/add': {
-      html = jade.renderFile('./views/add.jade', {
-        messages: messagearr,
-        theme: validateTheme(query.theme)
-      });
-      res.end(html);
-    }
-    case '/post': {
-      require('./addmessage')(req, messagearr, res);
-    }
+// general purpose middleware
+app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-      res.end(html);
+app.set('view engine', 'jade');
+app.use(express.static('public'));
 
-}
 
-  file.serve(req, res);
-
+    app.route('/')
+        .get((req,res,next) => {
+      //html = jade.renderFile('./views/index.jade', {
+      //theme: validateTheme(query.theme)
+      res.render(__dirname + '/views/index.jade');
+    });
+ 
+app.route('/add')
+    .get((req,res,next) => {
+  //html = jade.renderFile('./views/index.jade', {
+  //theme: validateTheme(query.theme)
+  res.render(__dirname + '/views/add.jade');
+});
+app.route('/messages')
+    .get((req, res, next) => {
+  Message.findAll((err, messages) => {
+  //res.status(err ? 400 : 200).send(err || messages);
+console.log(messages);
+res.render(__dirname + '/views/messages.jade',{message1: messages});
+});
 })
-.listen(PORT, err => {
-  if(err) return console.log(err);
-  console.log(`Node server listening on port ${PORT}`);
+.post((req, res, next) => {
+  Message.create(req.body, (err, messages) => {
+  //res.status(err ? 400 : 200).send(err || null);
+  res.render(__dirname + '/views/messages.jade',{message1: messages});
+});
+})
+.delete((req, res, next) => {
+  Message.delete(req.body.uuid, err => {
+  //res.status(err ? 400 : 200).send(err || null);
+  res.render(__dirname + '/views/messages.jade',{message1: messages});
+});
+})
+.put((req, res, next) => {
+  console.log(req.body)
+  Message.delete(req.body.uuid, err => {
+  //res.status(err ? 400 : 200).send(err || null);
+  Message.create(req.body, (err, messages) => {
+  res.render(__dirname + '/views/messages.jade',{message1: messages});
+})
+});
+})
+
+
+app.listen(PORT, err => {
+  console.log( err || `Server listening on port ${PORT}` );
 });
 
-function validateTheme(theme) {
+
+/*function validateTheme(theme) {
   if(theme) {
     theme = theme.toLowerCase();
   }
@@ -77,5 +84,5 @@ function validateTheme(theme) {
   }
 }
 
-
+*/
 
