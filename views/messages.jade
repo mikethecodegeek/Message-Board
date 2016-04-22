@@ -4,6 +4,21 @@ extends ./layout.jade
 block content
     .container
         h1.text-center Messages
+        button#postnew Post A New Message
+        #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel')
+            .modal-dialog(role='document')
+                .modal-content
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                        h4#myModalLabel.modal-title Modal title
+                    .modal-body
+                        input#img.col-md-4.col-md-offset-1(placeholder='Enter url of image')
+                        input#name.col-md-4.col-md-offset-2(placeholder='Enter User Name')
+                        textarea#message.col-md-12(placeholder='Enter Message')
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                        button.post.btn.btn-primary(type='button') Save changes
         -
             list= message1
         each item in list

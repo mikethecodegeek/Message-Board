@@ -15,6 +15,8 @@ function init() {
             data: {img:img,usr:nme,message:mess},
             success: null
         });
+       
+        $('#myModal').modal('hide');
     })
     $('.delete').on("click",function() {
         console.log($(this).parent()[0].id);
@@ -37,5 +39,8 @@ function init() {
             data: {uuid :$(this).parent()[0].id,img:img,usr:nme,message:mess},
             success: null
         });
+    })
+    $('#postnew').on("click",function() {
+        $('#myModal').modal('show');
     })
 }
