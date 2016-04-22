@@ -15,8 +15,9 @@ function init() {
             data: {img:img,usr:nme,message:mess},
             success: null
         });
-       
+
         $('#myModal').modal('hide');
+        location.reload();
     })
     $('.delete').on("click",function() {
         console.log($(this).parent()[0].id);
