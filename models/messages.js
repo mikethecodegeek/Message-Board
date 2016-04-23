@@ -2,66 +2,51 @@
 
 // this is going to have the job
 // of interacting with the data
-
-var fs = require('fs');
+'use strict';
 var path = require('path');
 var uuid = require('uuid');
-
 var dataFile = path.join(__dirname, '../data/messages.json');
-
-exports.findAll = function(cb) {
-    fs.readFile(dataFile, (err, data) => {
-        if(err) {
-            cb(err);
-            return;
-        }
-
-        try {
-            var messages = JSON.parse(data);
-} catch(err) {
-        return cb(err);
-    }
-
-    cb(null, messages);
-});
-};
+var db = require('../config/db');
+db.run('CREATE TABLE IF NOT EXISTS messages (id text, img text, user text, message text)');
 
 exports.create = function(message, cb) {
-    //console.log(message);
+    db.serialize(function () {
+        var stmt = db.prepare("INSERT INTO messages VALUES (?,?,?,?)");
+        stmt.run(uuid(), message.image, message.user, message.message);
 
-    this.findAll((err, messages) => {
-        if(err) {
-            return cb(err);
-        }
-        var newMessage = {
-            img: message.img,
-            usr: message.usr,
-            message: message.message,
-            id: uuid()
-        };
-    console.log(newMessage)
-    messages.push(newMessage);
-
-    fs.writeFile(dataFile, JSON.stringify(messages), err => {
-        cb(err);
-});
-})};
-
-    exports.delete = function(message, cb) {
-        //console.log("Current: " + message);
-
-        this.findAll((err, messages) => {
-            if(err) {
-                return cb(err);
-            }
-        //console.log(messages);
-        //messages = messages
-            messages = messages.filter(function(msg){return message !== msg.id})
-            fs.writeFile(dataFile, JSON.stringify(messages), err => {
+        stmt.finalize(function (err) {
             cb(err);
-    });
+        });
+    })
+}
 
 
-    });
+    exports.findAll = function (cb) {
+
+        db.all('SELECT * FROM messages', function (err, messages) {
+            cb(err, messages);
+        });
+
     };
+    exports.delete = function (message, cb) {
+        db.serialize(function (err, messages) {
+            var stmt = db.prepare(`DELETE FROM messages where id= '${message}'`);
+            stmt.run();
+
+            stmt.finalize(function (err) {
+                cb(err);
+            });
+        })
+    }
+    exports.edit = function (message, cb) {
+        db.serialize(function (err) {
+            var stmt = db.prepare(`UPDATE messages set message= '${message.message}', img = '${message.image}', user = '${message.user}' where id='${message.id}'`);
+            stmt.run();
+
+            stmt.finalize(function (err) {
+                cb(err);
+            });
+        })
+    }
+
 

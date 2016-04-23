@@ -1,6 +1,6 @@
 'use strict';
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 let jade = require('jade');
 let http = require('http');
@@ -12,7 +12,6 @@ var uuid = require('uuid');
 var app = express();
 var path = require('path');
 var Message = require('./models/messages');
-
 // general purpose middleware
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -20,9 +19,45 @@ app.use(bodyParser.json());
 
 app.set('view engine', 'jade');
 app.use(express.static('public'));
+var router = express.Router();
 
+router.get('/', function(req, res) {
+  res.render(path.join(__dirname, './views/index.jade'));
+});
 
-    app.route('/')
+router.get('/add', function(req, res) {
+  res.render(path.join(__dirname + '/views/add.jade'));
+});
+app.get('/messages', function(req, res) {
+  Message.findAll((err, messages) => {
+    //res.send(messages);
+      res.render(path.join(__dirname + '/views/messages.jade'), {message1: messages})
+  });
+});
+app.post('/messages', function(req,res){
+   Message.create( req.body, (err, messages)=> {
+    // res.send(messages);
+ // res.render(path.join(__dirname + '/views/messages.jade'), {message1: messages})
+   });
+});
+app.put('/messages', function(req,res){
+  Message.edit(req.body, (err, messages) => {
+    //res.send(messages);
+   //res.render(path.join(__dirname + '/views/messages.jade'), {message1: err})
+  });
+});
+app.delete('/messages', function(req,res){
+  Message.delete(req.body.id, (err,messages) => {
+    //res.send(messages);
+   // res.render(path.join(__dirname + '/views/messages.jade'), {message1: messages})
+  });
+});
+
+app.use('/', router);
+app.use('/add', router);
+app.use('/messages', router);
+
+/*    app.route('/')
         .get((req,res,next) => {
       //html = jade.renderFile('./views/index.jade', {
       //theme: validateTheme(query.theme)
@@ -39,7 +74,6 @@ app.route('/messages')
     .get((req, res, next) => {
   Message.findAll((err, messages) => {
   //res.status(err ? 400 : 200).send(err || messages);
-console.log(messages);
 res.render(__dirname + '/views/messages.jade',{message1: messages});
 });
 })
@@ -64,25 +98,11 @@ res.render(__dirname + '/views/messages.jade',{message1: messages});
 })
 });
 })
-
+*/
 
 app.listen(PORT, err => {
   console.log( err || `Server listening on port ${PORT}` );
 });
 
 
-/*function validateTheme(theme) {
-  if(theme) {
-    theme = theme.toLowerCase();
-  }
-  let themes = [ 'cerulean', 'cosmo', 'cyborg', 'flatly', 'darkly', 'journal', 'lumen', 'paper', 'readable', 'sandstone', 'simplex', 'slate', 'spacelab', 'superhero', 'united', 'yeti'];
-
-  if(themes.indexOf(theme) !== -1) {
-    return theme;
-  } else {
-    return null;
-  }
-}
-
-*/
 

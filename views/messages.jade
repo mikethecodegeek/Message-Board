@@ -19,6 +19,20 @@ block content
                     .modal-footer
                         button.btn.btn-default(type='button', data-dismiss='modal') Close
                         button.post.btn.btn-primary(type='button') Save changes
+        #myModal2.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel')
+            .modal-dialog(role='document')
+                .modal-content
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                        h4#myModalLabel.modal-title Post a Message
+                    .modal-body
+                        input#editimg.col-md-4.col-md-offset-1(placeholder='Enter url of image')
+                        input#editname.col-md-4.col-md-offset-2(placeholder='Enter User Name')
+                        textarea#editmessage.col-md-12(placeholder='Enter Message')
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                        button#edit.btn.btn-primary(type='button') Save changes
         -
             list= message1
         each item in list
@@ -27,7 +41,4 @@ block content
                .usr.col-md-5= item.usr
                .message.col-md-5= item.message
                button(class= "delete") Delete
-               input#editimg.col-md-2(placeholder='Enter url of image')
-               input#editname.col-md-2(placeholder='Enter User Name')
-               textarea#editmessage(placeholder='Enter Message')
-               button.edit.col-md-offset-1.post Edit Post
+               button#makeedit.edit.col-md-offset-1.post Edit Post
